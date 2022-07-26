@@ -1,5 +1,15 @@
 
-MAX_VELOCITY = 12
+const MAX_VELOCITY = 12
+const RIGHT_COLOR = 'rgb(117,0,117)'
+const RIGHT_COLOR_ANIMATION1 = 'rgb(97,0,97)'
+const RIGHT_COLOR_ANIMATION2 = 'rgb(107,0,107)'
+const LEFT_COLOR = 'white'
+const LEFT_COLOR_ANIMATION1 = 'rgb(215,215,215)'
+const LEFT_COLOR_ANIMATION2 = 'rgb(220,220,220)'
+const BALL_COLOR = 'white'
+const WINNER_COLOR = 'green'
+const LOSER_COLOR = 'red'
+
 class Paddle {
     constructor({
         x,
@@ -36,7 +46,7 @@ class Ball {
             x: canvas.width/2,
             y: canvas.height/2
         }
-        this.color = 'white'
+        this.color = BALL_COLOR
         this.velocity = {
             x: randVelocity(),
             y: randVelocity()
@@ -57,11 +67,25 @@ class Ball {
             this.position.x = leftPaddle.position.x + leftPaddle.width
             this.velocity.x = Math.ceil(this.velocity.x*-1.01)
             this.velocity.y = randChangeY(this)
+            leftPaddle.color = LEFT_COLOR_ANIMATION1
+            setTimeout(() => {
+                leftPaddle.color = LEFT_COLOR_ANIMATION2
+                setTimeout(() => {
+                    leftPaddle.color = LEFT_COLOR
+                },100)
+            }, 200)
         }
         if (paddleCollision(rightPaddle)) {
             this.position.x = rightPaddle.position.x - this.radius
             this.velocity.x = Math.ceil(this.velocity.x*-1.01)
             this.velocity.y = randChangeY(this)
+            rightPaddle.color = RIGHT_COLOR_ANIMATION1
+            setTimeout(() => {
+                rightPaddle.color = RIGHT_COLOR_ANIMATION2
+                setTimeout(() => {
+                    rightPaddle.color = RIGHT_COLOR
+                },100)
+            }, 200)
         }
 
         if (checkForWinner()) {
@@ -76,10 +100,10 @@ class Ball {
                     y: randVelocity()
                 }
                 this.reset = false
-                rightPaddle.color = 'purple'
-                leftPaddle.color = 'white'
+                rightPaddle.color = RIGHT_COLOR
+                leftPaddle.color = LEFT_COLOR
             },3000)
-            }
+        }
 
         if (wallCollision()) {
             this.velocity.y *= -1

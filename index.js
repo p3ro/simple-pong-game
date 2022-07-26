@@ -6,15 +6,16 @@ canvas.height = 576
 
 context.fillRect(0, 0, canvas.width, canvas.height)
 
+
 //players
 const leftPaddle = new Paddle({
-    x : 20,
-    color: 'white'
+    x: 20,
+    color: LEFT_COLOR
 })
 
 const rightPaddle = new Paddle({
     x:canvas.width-40,
-    color:'purple'
+    color: RIGHT_COLOR
 })
 
 const ball = new Ball()
@@ -35,10 +36,18 @@ document.addEventListener('keydown', (k) => {
             keysPressed.w = true
             leftPaddle.lastPressed = 'w'
             break
+        case 'W':
+            keysPressed.w = true
+            leftPaddle.lastPressed = 'w'
+            break
         case 's':
             keysPressed.s = true
             leftPaddle.lastPressed = 's'
             break
+        case 'S':
+            keysPressed.s = true
+            leftPaddle.lastPressed = 's'
+                break
         case 'ArrowUp':
             keysPressed.ArrowUp = true
             rightPaddle.lastPressed = 'ArrowUp'
@@ -55,7 +64,13 @@ document.addEventListener('keyup', (k) => {
         case 'w':
             keysPressed.w = false
             break
+        case 'W':
+            keysPressed.w = false
+            break
         case 's':
+            keysPressed.s = false
+            break
+        case 'S':
             keysPressed.s = false
             break
         case 'ArrowUp':

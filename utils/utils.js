@@ -35,14 +35,14 @@ function paddleCollision(paddle) {
  function checkForWinner() {
     if (ball.position.x + ball.velocity.x < 0 && !ball.reset) {
         console.log("Right Won")
-        rightPaddle.color = 'green'
-        leftPaddle.color = 'red'
+        rightPaddle.color = WINNER_COLOR
+        leftPaddle.color = LOSER_COLOR
         return true
     }
     if (ball.position.x + ball.velocity.x > canvas.width && !ball.reset) {
         console.log("Left Won")
-        rightPaddle.color = 'red'
-        leftPaddle.color = 'green'
+        rightPaddle.color = LOSER_COLOR
+        leftPaddle.color = WINNER_COLOR
         return true
     }
     return false
