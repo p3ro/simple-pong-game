@@ -1,41 +1,45 @@
 
+//randomize the starting velocity of the ball
 function randVelocity() {
     if (Math.random() < 0.5) {
-        return Math.floor(Math.random()*3)+5
+        return Math.floor(Math.random() * 3) + 5
     }
-    return (Math.floor(Math.random()*3)+5)*-1
+    return (Math.floor(Math.random() * 3) + 5) * -1
 }
 
+//check for collision between ball and wall
 function wallCollision() {
-   return (ball.position.y + ball.velocity.y + ball.radius >= canvas.height - WALL_HEIGHT|| 
-    ball.position.y + ball.velocity.y <= WALL_HEIGHT)
+    return (ball.position.y + ball.velocity.y + ball.radius >= canvas.height - WALL_HEIGHT ||
+        ball.position.y + ball.velocity.y <= WALL_HEIGHT)
 }
 
+//check for collision between ball and paddle
 function paddleCollision(paddle) {
     return (ball.position.x + ball.velocity.x <= paddle.position.x + paddle.width &&
-        ball.position.x +  ball.velocity.x + ball.radius >= paddle.position.x &&
-        ball.position.y + ball.velocity.y <= paddle.position.y +paddle.velocity + paddle.height &&
+        ball.position.x + ball.velocity.x + ball.radius >= paddle.position.x &&
+        ball.position.y + ball.velocity.y <= paddle.position.y + paddle.velocity + paddle.height &&
         ball.position.y + ball.velocity.y + ball.radius >= paddle.position.y + paddle.velocity)
- }
+}
 
- function randChangeY(ball) {
+//randomly change ball's y velocity
+function randChangeY(ball) {
     rand = Math.random()
     if (rand < 0.2) {
-        return Math.ceil(ball.velocity.y*1.1)
+        return Math.ceil(ball.velocity.y * 1.1)
     }
     if (rand < 0.4) {
-        return Math.ceil(ball.velocity.y*-1.1)
+        return Math.ceil(ball.velocity.y * -1.1)
     }
     if (rand < 0.6) {
-        return Math.floor(ball.velocity.y*0.9)
+        return Math.floor(ball.velocity.y * 0.9)
     }
     if (rand < 0.8) {
-        return Math.floor(ball.velocity.y*-0.9)
+        return Math.floor(ball.velocity.y * -0.9)
     }
     else return ball.velocity.y
- }
+}
 
- function checkForWinner() {
+function checkForWinner() {
     if (ball.position.x + ball.velocity.x < 0 && !ball.reset) {
         console.log("Right Won")
         rightPaddle.color = WINNER_COLOR
@@ -51,4 +55,4 @@ function paddleCollision(paddle) {
         return true
     }
     return false
- }
+}

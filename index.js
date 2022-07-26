@@ -22,10 +22,6 @@ const rightPaddle = new Paddle({
 
 const ball = new Ball()
 
-//set score
-document.getElementById("rightScore").innerHTML = rightPaddle.score
-document.getElementById("leftScore").innerHTML = leftPaddle.score
-
 //checking which key was pressed
 const keysPressed = {
     w: false,
@@ -87,17 +83,21 @@ document.addEventListener('keyup', (k) => {
     }
 })
 
+
+
 //basic game loop
 function loop() {
     requestAnimationFrame(loop)
 
-    //draw background, players, ball and enviroment
+    //draw background
     context.clearRect(0, 0, canvas.width, canvas.height)
     context.fillStyle = 'black'
     context.fillRect(0, 0, canvas.width, canvas.height)
+    //draw walls
     context.fillStyle = WALL_COLOR
     context.fillRect(0, 0, canvas.width, WALL_HEIGHT)
     context.fillRect(0, canvas.height-WALL_HEIGHT, canvas.width, WALL_HEIGHT)
+    //draw center
     context.beginPath()
     context.arc(canvas.width/2, canvas.height/2, 25, 0, 2*Math.PI)
     context.strokeStyle = WALL_COLOR
@@ -114,7 +114,7 @@ function loop() {
     context.moveTo(canvas.width/2+50,canvas.height/2)
     context.lineTo(canvas.width/2+35,canvas.height/2)
     context.stroke()
-    
+    //draw players and ball
     leftPaddle.update()
     rightPaddle.update()
     ball.update()
@@ -139,4 +139,10 @@ function loop() {
     }
 }
 
-loop()
+setTimeout(()=> {
+    //initialize
+    document.getElementById("rightScore").innerHTML = rightPaddle.score
+    document.getElementById("leftScore").innerHTML = leftPaddle.score
+    ballLaunch.play()
+    loop()
+}, 500)

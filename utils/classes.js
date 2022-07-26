@@ -10,6 +10,21 @@ const BALL_COLOR = 'white'
 const WINNER_COLOR = 'green'
 const LOSER_COLOR = 'red'
 
+const ballOnPaddleSound = new Audio()
+ballOnPaddleSound.src = "../sounds/ball_on_paddle.mp3"
+
+const ballOnWallSound = new Audio()
+ballOnWallSound.src = "../sounds/ball_on_wall.mp3"
+
+const ballLaunch = new Audio()
+ballLaunch.src = "../sounds/ball_launch.mp3"
+
+const applause = new Audio()
+applause.src = "../sounds/applause.mp3"
+
+const applause2 = new Audio()
+applause2.src = "../sounds/applause_2.mp3"
+
 class Paddle {
     constructor({
         x,
@@ -33,6 +48,7 @@ class Paddle {
     }
 
     update() {
+        //move paddles and make sure they don't go through walls
         if (this.position.y + this.velocity >= WALL_HEIGHT
             && this.position.y + this.velocity + this.height <= canvas.height - WALL_HEIGHT) {
                 this.position.y += this.velocity
@@ -54,6 +70,7 @@ class Ball {
         }
         this.radius = 8
         this.reset = false
+        this.fired = false
     }
 
     draw() {
@@ -64,11 +81,14 @@ class Ball {
     }
 
     update() {
+        //if ball collides with a paddle reverse it's x velocity and accelerate it
+        //also change it's y velocity at random and play a simple animation and sound effect
         if (paddleCollision(leftPaddle)) {
             this.position.x = leftPaddle.position.x + leftPaddle.width
             this.velocity.x = Math.ceil(this.velocity.x*-1.1)
             this.velocity.y = randChangeY(this)
             leftPaddle.color = LEFT_COLOR_ANIMATION1
+            ballOnPaddleSound.play()
             setTimeout(() => {
                 leftPaddle.color = LEFT_COLOR_ANIMATION2
                 setTimeout(() => {
@@ -81,6 +101,7 @@ class Ball {
             this.velocity.x = Math.ceil(this.velocity.x*-1.1)
             this.velocity.y = randChangeY(this)
             rightPaddle.color = RIGHT_COLOR_ANIMATION1
+            ballOnPaddleSound.play()
             setTimeout(() => {
                 rightPaddle.color = RIGHT_COLOR_ANIMATION2
                 setTimeout(() => {
@@ -89,7 +110,16 @@ class Ball {
             }, 200)
         }
 
+        //if the ball passes a paddle and goes out of bounds we have a winner
         if (checkForWinner()) {
+            //play one of the two sound effects at random
+            if (Math.random() < 0.6) {
+                applause.play()
+            }
+            else {
+                applause2.play()
+            }
+            //reset ball, update score, play animations
             this.reset = true
             document.getElementById("rightScore").innerHTML = rightPaddle.score
             document.getElementById("leftScore").innerHTML = leftPaddle.score
@@ -105,13 +135,17 @@ class Ball {
                 this.reset = false
                 rightPaddle.color = RIGHT_COLOR
                 leftPaddle.color = LEFT_COLOR
-            },3000)
+                ballLaunch.play()
+            },4000)
         }
 
-        if (wallCollision()) {
+        //on collision with a wall reverse ball's y velocity
+        if (wallCollision() && !this.reset) {
             this.velocity.y *= -1
+            ballOnWallSound.play()
         }
 
+        //make sure x and y velocity don't go over a limit
         if (this.velocity.x > MAX_VELOCITY) {
             this.velocity.x = MAX_VELOCITY
         }
@@ -120,6 +154,7 @@ class Ball {
             this.velocity.y = MAX_VELOCITY
         }
 
+        //move ball
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
         this.draw()
