@@ -1,5 +1,7 @@
 const canvas = document.querySelector('canvas')
 const context = canvas.getContext('2d')
+const WALL_COLOR = 'rgb(201,201,201)'
+const WALL_HEIGHT = 15
 
 canvas.width = 1024
 canvas.height = 576
@@ -20,8 +22,11 @@ const rightPaddle = new Paddle({
 
 const ball = new Ball()
 
-//checking which key was pressed
+//set score
+document.getElementById("rightScore").innerHTML = rightPaddle.score
+document.getElementById("leftScore").innerHTML = leftPaddle.score
 
+//checking which key was pressed
 const keysPressed = {
     w: false,
     s: false,
@@ -86,10 +91,30 @@ document.addEventListener('keyup', (k) => {
 function loop() {
     requestAnimationFrame(loop)
 
-    //draw background, players and ball
+    //draw background, players, ball and enviroment
     context.clearRect(0, 0, canvas.width, canvas.height)
     context.fillStyle = 'black'
     context.fillRect(0, 0, canvas.width, canvas.height)
+    context.fillStyle = WALL_COLOR
+    context.fillRect(0, 0, canvas.width, WALL_HEIGHT)
+    context.fillRect(0, canvas.height-WALL_HEIGHT, canvas.width, WALL_HEIGHT)
+    context.beginPath()
+    context.arc(canvas.width/2, canvas.height/2, 25, 0, 2*Math.PI)
+    context.strokeStyle = WALL_COLOR
+    context.lineWidth = 3
+    context.stroke()
+    context.beginPath()
+    context.arc(canvas.width/2, canvas.height/2, 5, 0, 2*Math.PI)
+    context.fill()
+    context.beginPath()
+    context.moveTo(canvas.width/2-50,canvas.height/2)
+    context.lineTo(canvas.width/2-35,canvas.height/2)
+    context.stroke()
+    context.beginPath()
+    context.moveTo(canvas.width/2+50,canvas.height/2)
+    context.lineTo(canvas.width/2+35,canvas.height/2)
+    context.stroke()
+    
     leftPaddle.update()
     rightPaddle.update()
     ball.update()

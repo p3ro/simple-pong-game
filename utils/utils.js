@@ -7,8 +7,8 @@ function randVelocity() {
 }
 
 function wallCollision() {
-   return (ball.position.y + ball.velocity.y + ball.radius >= canvas.height || 
-    ball.position.y + ball.velocity.y <= 0)
+   return (ball.position.y + ball.velocity.y + ball.radius >= canvas.height - WALL_HEIGHT|| 
+    ball.position.y + ball.velocity.y <= WALL_HEIGHT)
 }
 
 function paddleCollision(paddle) {
@@ -20,16 +20,19 @@ function paddleCollision(paddle) {
 
  function randChangeY(ball) {
     rand = Math.random()
-    if (rand < 0.25) {
-        return Math.ceil(ball.velocity.y*1.01)
+    if (rand < 0.2) {
+        return Math.ceil(ball.velocity.y*1.1)
     }
-    if (rand < 0.5) {
-        return Math.ceil(ball.velocity.y*-1.01)
+    if (rand < 0.4) {
+        return Math.ceil(ball.velocity.y*-1.1)
     }
-    if (rand < 0.75) {
-        return Math.floor(ball.velocity.y*0.99)
+    if (rand < 0.6) {
+        return Math.floor(ball.velocity.y*0.9)
     }
-    return Math.floor(ball.velocity.y*-0.99)
+    if (rand < 0.8) {
+        return Math.floor(ball.velocity.y*-0.9)
+    }
+    else return ball.velocity.y
  }
 
  function checkForWinner() {
@@ -37,12 +40,14 @@ function paddleCollision(paddle) {
         console.log("Right Won")
         rightPaddle.color = WINNER_COLOR
         leftPaddle.color = LOSER_COLOR
+        rightPaddle.score++
         return true
     }
     if (ball.position.x + ball.velocity.x > canvas.width && !ball.reset) {
         console.log("Left Won")
         rightPaddle.color = LOSER_COLOR
         leftPaddle.color = WINNER_COLOR
+        leftPaddle.score++
         return true
     }
     return false

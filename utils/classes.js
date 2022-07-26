@@ -1,5 +1,5 @@
 
-const MAX_VELOCITY = 12
+const MAX_VELOCITY = 15
 const RIGHT_COLOR = 'rgb(117,0,117)'
 const RIGHT_COLOR_ANIMATION1 = 'rgb(97,0,97)'
 const RIGHT_COLOR_ANIMATION2 = 'rgb(107,0,107)'
@@ -24,6 +24,7 @@ class Paddle {
         this.color = color
         this.velocity = 0
         this.lastPressed
+        this.score = 0
     }
     
     draw() {
@@ -32,8 +33,8 @@ class Paddle {
     }
 
     update() {
-        if (this.position.y + this.velocity >= 0
-            && this.position.y + this.velocity + this.height <= canvas.height) {
+        if (this.position.y + this.velocity >= WALL_HEIGHT
+            && this.position.y + this.velocity + this.height <= canvas.height - WALL_HEIGHT) {
                 this.position.y += this.velocity
         }
         this.draw()
@@ -65,7 +66,7 @@ class Ball {
     update() {
         if (paddleCollision(leftPaddle)) {
             this.position.x = leftPaddle.position.x + leftPaddle.width
-            this.velocity.x = Math.ceil(this.velocity.x*-1.01)
+            this.velocity.x = Math.ceil(this.velocity.x*-1.1)
             this.velocity.y = randChangeY(this)
             leftPaddle.color = LEFT_COLOR_ANIMATION1
             setTimeout(() => {
@@ -77,7 +78,7 @@ class Ball {
         }
         if (paddleCollision(rightPaddle)) {
             this.position.x = rightPaddle.position.x - this.radius
-            this.velocity.x = Math.ceil(this.velocity.x*-1.01)
+            this.velocity.x = Math.ceil(this.velocity.x*-1.1)
             this.velocity.y = randChangeY(this)
             rightPaddle.color = RIGHT_COLOR_ANIMATION1
             setTimeout(() => {
@@ -90,6 +91,8 @@ class Ball {
 
         if (checkForWinner()) {
             this.reset = true
+            document.getElementById("rightScore").innerHTML = rightPaddle.score
+            document.getElementById("leftScore").innerHTML = leftPaddle.score
             setTimeout(()=>{
                 this.position = {
                     x: canvas.width/2,
