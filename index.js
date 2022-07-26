@@ -8,14 +8,16 @@ context.fillRect(0, 0, canvas.width, canvas.height)
 
 //players
 const leftPaddle = new Paddle({
-    x : 10,
+    x : 20,
     color: 'white'
 })
 
 const rightPaddle = new Paddle({
-    x:canvas.width-30,
+    x:canvas.width-40,
     color:'purple'
 })
+
+const ball = new Ball()
 
 //checking which key was pressed
 
@@ -75,7 +77,8 @@ function loop() {
     context.fillRect(0, 0, canvas.width, canvas.height)
     leftPaddle.update()
     rightPaddle.update()
-
+    ball.update()
+    
     //reset players' velocity
     leftPaddle.velocity = 0
     rightPaddle.velocity = 0
