@@ -24,11 +24,10 @@ applause.src = "../sounds/applause.mp3"
 
 const applause2 = new Audio()
 applause2.src = "../sounds/applause_2.mp3"
-
 class Paddle {
     constructor({
         x,
-        color
+        color,
     }) {
         this.width = 20
         this.height = 100
@@ -42,6 +41,17 @@ class Paddle {
         this.score = 0
     }
     
+    restart(x,color) {
+        this.position = {
+            x: x,
+            y: canvas.height/2 - this.height/2
+        }
+        this.color = color
+        this.velocity = 0
+        this.lastPressed = null
+        this.score = 0
+    }
+
     draw() {
         context.fillStyle = this.color
         context.fillRect(this.position.x, this.position.y, this.width, this.height)
@@ -73,6 +83,20 @@ class Ball {
         this.fired = false
     }
 
+    restart() {
+        this.position = {
+            x: canvas.width/2,
+            y: canvas.height/2
+        }
+        this.velocity = {
+            x: randVelocity(),
+            y: randVelocity()
+        }
+        this.reset = false
+        this.fired = false
+        ballLaunch.play()
+    }
+
     draw() {
         context.fillStyle = this.color
         context.beginPath()
@@ -89,12 +113,12 @@ class Ball {
             this.velocity.y = randChangeY(this)
             leftPaddle.color = LEFT_COLOR_ANIMATION1
             ballOnPaddleSound.play()
-            setTimeout(() => {
+            timers.push(setTimeout(() => {
                 leftPaddle.color = LEFT_COLOR_ANIMATION2
-                setTimeout(() => {
+                timers.push(setTimeout(() => {
                     leftPaddle.color = LEFT_COLOR
-                },100)
-            }, 200)
+                },100))
+            }, 200))
         }
         if (paddleCollision(rightPaddle)) {
             this.position.x = rightPaddle.position.x - this.radius
@@ -102,12 +126,12 @@ class Ball {
             this.velocity.y = randChangeY(this)
             rightPaddle.color = RIGHT_COLOR_ANIMATION1
             ballOnPaddleSound.play()
-            setTimeout(() => {
+            timers.push(setTimeout(() => {
                 rightPaddle.color = RIGHT_COLOR_ANIMATION2
-                setTimeout(() => {
+                timers.push(setTimeout(() => {
                     rightPaddle.color = RIGHT_COLOR
-                },100)
-            }, 200)
+                },100))
+            }, 200))
         }
 
         //if the ball passes a paddle and goes out of bounds we have a winner
@@ -123,7 +147,7 @@ class Ball {
             this.reset = true
             document.getElementById("rightScore").innerHTML = rightPaddle.score
             document.getElementById("leftScore").innerHTML = leftPaddle.score
-            setTimeout(()=>{
+            timers.push(setTimeout(()=>{
                 this.position = {
                     x: canvas.width/2,
                     y: canvas.height/2
@@ -136,7 +160,7 @@ class Ball {
                 rightPaddle.color = RIGHT_COLOR
                 leftPaddle.color = LEFT_COLOR
                 ballLaunch.play()
-            },4000)
+            },4000))
         }
 
         //on collision with a wall reverse ball's y velocity

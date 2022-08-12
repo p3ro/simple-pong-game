@@ -6,8 +6,11 @@ const WALL_HEIGHT = 15
 canvas.width = 1024
 canvas.height = 576
 
+timers = []
+
 context.fillRect(0, 0, canvas.width, canvas.height)
 
+let pause = false
 
 //players
 const leftPaddle = new Paddle({
@@ -33,29 +36,75 @@ const keysPressed = {
 //check for key presses
 document.addEventListener('keydown', (k) => {
     switch (k.key) {
+        case 'Escape':
+            if (!ball.reset) {
+                pause = !pause
+            }
+            break
+        case 'Backspace':
+            if (!ball.reset) {
+                pause = !pause
+            }
+            break
+        case 'r':
+            pause = false
+            leftPaddle.restart(20, LEFT_COLOR)
+            rightPaddle.restart(canvas.width-40, RIGHT_COLOR)
+            ball.restart()
+            for(i=0; i<timers.length; i++) {
+                clearTimeout(timers[i])
+            }
+            timers = []
+            document.getElementById("rightScore").innerHTML = rightPaddle.score
+            document.getElementById("leftScore").innerHTML = leftPaddle.score
+            break
+        case 'R':
+            pause = false
+            leftPaddle.restart(20, LEFT_COLOR)
+            rightPaddle.restart(canvas.width-40, RIGHT_COLOR)
+            ball.restart()
+            for(i=0; i<timers.length; i++) {
+                clearTimeout(timers[i])
+            }
+            timers = []
+            document.getElementById("rightScore").innerHTML = rightPaddle.score
+            document.getElementById("leftScore").innerHTML = leftPaddle.score
+            break
         case 'w':
-            keysPressed.w = true
-            leftPaddle.lastPressed = 'w'
+            if (!pause){
+                keysPressed.w = true
+                leftPaddle.lastPressed = 'w'
+            }
             break
         case 'W':
-            keysPressed.w = true
-            leftPaddle.lastPressed = 'w'
+            if (!pause){
+                keysPressed.w = true
+                leftPaddle.lastPressed = 'w'
+            }
             break
         case 's':
-            keysPressed.s = true
-            leftPaddle.lastPressed = 's'
+            if (!pause){
+                keysPressed.s = true
+                leftPaddle.lastPressed = 's'
+            }
             break
         case 'S':
-            keysPressed.s = true
-            leftPaddle.lastPressed = 's'
+            if (!pause){
+                keysPressed.s = true
+                leftPaddle.lastPressed = 's'
+            }
                 break
         case 'ArrowUp':
-            keysPressed.ArrowUp = true
-            rightPaddle.lastPressed = 'ArrowUp'
+            if (!pause){
+                keysPressed.ArrowUp = true
+                rightPaddle.lastPressed = 'ArrowUp'
+            }
             break
         case 'ArrowDown':
-            keysPressed.ArrowDown = true
-            rightPaddle.lastPressed = 'ArrowDown'
+            if (!pause){
+                keysPressed.ArrowDown = true
+                rightPaddle.lastPressed = 'ArrowDown'
+            }
             break
     }
 })
@@ -88,54 +137,55 @@ document.addEventListener('keyup', (k) => {
 //basic game loop
 function loop() {
     requestAnimationFrame(loop)
+    if (!pause) {
+        //draw background
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        context.fillStyle = 'black'
+        context.fillRect(0, 0, canvas.width, canvas.height)
+        //draw walls
+        context.fillStyle = WALL_COLOR
+        context.fillRect(0, 0, canvas.width, WALL_HEIGHT)
+        context.fillRect(0, canvas.height-WALL_HEIGHT, canvas.width, WALL_HEIGHT)
+        //draw center
+        context.beginPath()
+        context.arc(canvas.width/2, canvas.height/2, 25, 0, 2*Math.PI)
+        context.strokeStyle = WALL_COLOR
+        context.lineWidth = 3
+        context.stroke()
+        context.beginPath()
+        context.arc(canvas.width/2, canvas.height/2, 5, 0, 2*Math.PI)
+        context.fill()
+        context.beginPath()
+        context.moveTo(canvas.width/2-50,canvas.height/2)
+        context.lineTo(canvas.width/2-35,canvas.height/2)
+        context.stroke()
+        context.beginPath()
+        context.moveTo(canvas.width/2+50,canvas.height/2)
+        context.lineTo(canvas.width/2+35,canvas.height/2)
+        context.stroke()
+        //draw players and ball
+        leftPaddle.update()
+        rightPaddle.update()
+        ball.update()
+        
+        //reset players' velocity
+        leftPaddle.velocity = 0
+        rightPaddle.velocity = 0
 
-    //draw background
-    context.clearRect(0, 0, canvas.width, canvas.height)
-    context.fillStyle = 'black'
-    context.fillRect(0, 0, canvas.width, canvas.height)
-    //draw walls
-    context.fillStyle = WALL_COLOR
-    context.fillRect(0, 0, canvas.width, WALL_HEIGHT)
-    context.fillRect(0, canvas.height-WALL_HEIGHT, canvas.width, WALL_HEIGHT)
-    //draw center
-    context.beginPath()
-    context.arc(canvas.width/2, canvas.height/2, 25, 0, 2*Math.PI)
-    context.strokeStyle = WALL_COLOR
-    context.lineWidth = 3
-    context.stroke()
-    context.beginPath()
-    context.arc(canvas.width/2, canvas.height/2, 5, 0, 2*Math.PI)
-    context.fill()
-    context.beginPath()
-    context.moveTo(canvas.width/2-50,canvas.height/2)
-    context.lineTo(canvas.width/2-35,canvas.height/2)
-    context.stroke()
-    context.beginPath()
-    context.moveTo(canvas.width/2+50,canvas.height/2)
-    context.lineTo(canvas.width/2+35,canvas.height/2)
-    context.stroke()
-    //draw players and ball
-    leftPaddle.update()
-    rightPaddle.update()
-    ball.update()
-    
-    //reset players' velocity
-    leftPaddle.velocity = 0
-    rightPaddle.velocity = 0
-
-    //check for movement
-    if (keysPressed.w && leftPaddle.lastPressed === 'w') {
-        leftPaddle.velocity = -5
-    }
-    else if (keysPressed.s && leftPaddle.lastPressed === 's') {
-        leftPaddle.velocity = 5
-    }
-    
-    if (keysPressed.ArrowUp && rightPaddle.lastPressed === 'ArrowUp') {
-        rightPaddle.velocity = -5
-    }
-    else if (keysPressed.ArrowDown && rightPaddle.lastPressed === 'ArrowDown') {
-        rightPaddle.velocity = 5
+        //check for movement
+        if (keysPressed.w && leftPaddle.lastPressed === 'w') {
+            leftPaddle.velocity = -7
+        }
+        else if (keysPressed.s && leftPaddle.lastPressed === 's') {
+            leftPaddle.velocity = 7
+        }
+        
+        if (keysPressed.ArrowUp && rightPaddle.lastPressed === 'ArrowUp') {
+            rightPaddle.velocity = -7
+        }
+        else if (keysPressed.ArrowDown && rightPaddle.lastPressed === 'ArrowDown') {
+            rightPaddle.velocity = 7
+        }
     }
 }
 
